@@ -86,10 +86,11 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // Authentication endpoints
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/auth/**"
-                        ).permitAll()
+                        // .requestMatchers(
+                        //         "/api/auth/**",
+                        //         "/auth/**"
+                        // ).permitAll()
+                        .requestMatchers("/auth/**").permitAll()
 
                         // Products
                         .requestMatchers(HttpMethod.GET, "/products/**")
