@@ -148,53 +148,88 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration config = new CorsConfiguration();
+    CorsConfiguration config = new CorsConfiguration();
 
-        // Read allowed origins from application properties
-        List<String> origins = Arrays.stream(
-                        allowedOriginsRaw.split(",")
-                )
-                .map(String::trim)
-                .filter(origin -> !origin.isEmpty())
-                .toList();
+    // TEMPORARY DIAGNOSTIC: explicitly allow your Vercel frontend
+    config.setAllowedOrigins(List.of(
+            "https://alzaidan-tau.vercel.app"
+    ));
 
-        config.setAllowedOrigins(origins);
+    config.setAllowedMethods(List.of(
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "PATCH",
+            "OPTIONS"
+    ));
 
-        config.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "PATCH",
-                "OPTIONS"
-        ));
+    config.setAllowedHeaders(List.of("*"));
 
-        // Allow standard browser request headers
-        config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
 
-        // Expose Authorization header
-        config.setExposedHeaders(List.of(
-                "Authorization"
-        ));
+    config.setMaxAge(3600L);
 
-        config.setAllowCredentials(true);
+    UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
 
-        // Cache preflight response for one hour
-        config.setMaxAge(3600L);
+    source.registerCorsConfiguration("/**", config);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+    return source;
+}
 
-        source.registerCorsConfiguration(
-                "/**",
-                config
-        );
 
-        return source;
-    }
+    // @Bean
+    // public CorsConfigurationSource corsConfigurationSource() {
+
+    //     CorsConfiguration config = new CorsConfiguration();
+
+    //     // Read allowed origins from application properties
+    //     List<String> origins = Arrays.stream(
+    //                     allowedOriginsRaw.split(",")
+    //             )
+    //             .map(String::trim)
+    //             .filter(origin -> !origin.isEmpty())
+    //             .toList();
+
+    //     config.setAllowedOrigins(origins);
+
+    //     config.setAllowedMethods(List.of(
+    //             "GET",
+    //             "POST",
+    //             "PUT",
+    //             "DELETE",
+    //             "PATCH",
+    //             "OPTIONS"
+    //     ));
+
+    //     // Allow standard browser request headers
+    //     config.setAllowedHeaders(List.of("*"));
+
+    //     // Expose Authorization header
+    //     config.setExposedHeaders(List.of(
+    //             "Authorization"
+    //     ));
+
+    //     config.setAllowCredentials(true);
+
+    //     // Cache preflight response for one hour
+    //     config.setMaxAge(3600L);
+
+    //     UrlBasedCorsConfigurationSource source =
+    //             new UrlBasedCorsConfigurationSource();
+
+    //     source.registerCorsConfiguration(
+    //             "/**",
+    //             config
+    //     );
+
+    //     return source;
+    // }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
